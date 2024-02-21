@@ -1,7 +1,10 @@
 package fr.campus.cda.charly.java_spring_boot_api.service;
 
+import fr.campus.cda.charly.java_spring_boot_api.dto.GameCreationParams;
+import fr.campus.cda.charly.java_spring_boot_api.dto.GameDTO;
 import fr.campus.cda.charly.java_spring_boot_api.dto.GameStatusDTO;
 import fr.campus.cda.charly.java_spring_boot_api.repository.GameCatalogInterface;
+import fr.le_campus_numerique.square_games.engine.Game;
 import fr.le_campus_numerique.square_games.engine.GameFactory;
 import fr.le_campus_numerique.square_games.engine.connectfour.ConnectFourGameFactory;
 import fr.le_campus_numerique.square_games.engine.taquin.TaquinGameFactory;
@@ -19,6 +22,7 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
     private final ConnectFourGameFactory connectFourGameFactory;
     private final Map<String, GameStatusDTO> games = new HashMap<>();
 
+
     public GameCatalogDummyImpl() {
         ticTacToeGameFactory = new TicTacToeGameFactory();
         taquinGameFactory = new TaquinGameFactory();
@@ -28,20 +32,24 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
     @Override
     public Collection<String> getGameIdentifiers() {
         Set<String> gameIds = new HashSet<>();
-        gameIds.add(ticTacToeGameFactory.getGameId());
-        gameIds.add(taquinGameFactory.getGameId());
-        gameIds.add(connectFourGameFactory.getGameId());
+        gameIds.add(ticTacToeGameFactory.getGameFactoryId());
+        gameIds.add(taquinGameFactory.getGameFactoryId());
+        gameIds.add(connectFourGameFactory.getGameFactoryId());
         return Collections.unmodifiableSet(gameIds);
     }
-
-    public void addGame(String gameId, GameStatusDTO game) {
-        games.put(gameId, game);
-    }
     @Override
-    public GameStatusDTO getGameState(String gameId) {
-        return games.get(gameId);
+    public Optional<GameStatusDTO> getGameState(String gameId) {
+        return Optional.ofNullable(games.get(gameId));
     }
 
+    public GameDTO createGame(GameCreationParams params){
+        GameFactory gameFactory = selectFactory(params.getGameType());
+        Game game = gameFactory.createGame(params.getPlayerCount(), params.getBoardSize());
+        UUID gameId = game.getId(); // Utilisez l'ID fourni par l'objet game
+        GameDTO creatGame = new GameDTO(game.getFactoryId(),game.getBoardSize(),game.getStatus(),game.getId());
+        games.put(gameId.toString(), new GameStatusDTO(game.getFactoryId(),game.getBoardSize(),game.getStatus(),game.getId()));
+        return creatGame;
+    }
 
     public GameFactory selectFactory(String type) {
 

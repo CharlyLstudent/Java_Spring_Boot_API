@@ -8,8 +8,10 @@ import fr.campus.cda.charly.java_spring_boot_api.service.GameCatalogDummyImpl;
 import fr.le_campus_numerique.square_games.engine.Game;
 import fr.le_campus_numerique.square_games.engine.GameFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -21,26 +23,15 @@ public class GameController {
 
     @PostMapping("/games")
     public GameDTO createGame(@RequestBody GameCreationParams params) {
-        String gameId = UUID.randomUUID().toString(); // Générez un ID unique pour le jeu
-        GameFactory gameFactory = gameCatalog.selectFactory(params.getGameType());
-        Game game = gameFactory.createGame(params.getPlayerCount(), params.getBoardSize());
-        gameCatalog.addGame(gameId, new GameStatusDTO(game.getFactoryId(), game.getBoardSize(), game.getStatus()));
-        return new GameDTO(game.getFactoryId(), game.getBoardSize(), gameId);
+        return gameCatalog.createGame(params);
     }
 
-    @GetMapping("/gameid")
-    public Collection<String> getGameId() {
-        return gameCatalog.getGameIdentifiers();
-    }
 
     @GetMapping("/games/{gameId}")
-    public ResponseEntity<GameStatusDTO> getGame(@PathVariable String gameId) {
-        GameStatusDTO gameDto = gameCatalog.getGameState(gameId); // Utilisation de la méthode du service
-        if (gameDto == null) {
-            return ResponseEntity.notFound().build(); // Si le jeu n'est pas trouvé, retourne 404
-        }
-        return ResponseEntity.ok(gameDto);
-
+    public GameStatusDTO getGame(@PathVariable String gameId) {
+        return gameCatalog
+                .getGameState(gameId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/games/{gameId}/move")

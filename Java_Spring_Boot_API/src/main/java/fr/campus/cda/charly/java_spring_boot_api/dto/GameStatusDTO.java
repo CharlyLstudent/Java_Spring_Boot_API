@@ -7,6 +7,6 @@ import fr.le_campus_numerique.square_games.engine.Token;
 import java.util.Map;
 import java.util.UUID;
 
-public record GameStatusDTO(String factoryId, int boardSize, GameStatus gameStatus) {
+public record GameStatusDTO(String factoryId, int boardSize, GameStatus gameStatus, UUID gameId) {
 
 }

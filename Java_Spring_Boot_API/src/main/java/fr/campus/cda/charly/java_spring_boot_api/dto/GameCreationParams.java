@@ -5,6 +5,8 @@ public class GameCreationParams {
     private int playerCount;
     private int boardSize;
 
+    private int id;
+
     public GameCreationParams() {
 
     }
@@ -23,4 +25,7 @@ public class GameCreationParams {
         return boardSize;
     }
 
+    public int getId() {
+        return id;
+    }
 }

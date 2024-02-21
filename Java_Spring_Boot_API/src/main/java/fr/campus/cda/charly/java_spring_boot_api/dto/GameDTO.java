@@ -1,5 +1,9 @@
 package fr.campus.cda.charly.java_spring_boot_api.dto;
 
-public record GameDTO(String name, Integer boardSize, String gameId) {
+import fr.le_campus_numerique.square_games.engine.GameStatus;
+
+import java.util.UUID;
+
+public record GameDTO(String name, Integer boardSize, GameStatus gameStatus, UUID getId) {
 
 }
