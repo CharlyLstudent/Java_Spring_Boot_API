@@ -25,37 +25,19 @@ public class GameController {
     public GameDTO createGame(@RequestBody GameCreationParams params) {
         return gameCatalog.createGame(params);
     }
-
-
     @GetMapping("/games/{gameId}")
     public GameStatusDTO getGame(@PathVariable String gameId) {
         return gameCatalog
                 .getGameState(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
-
-    @PostMapping("/games/{gameId}/move")
-    public void moveToken(@PathVariable String gameId) {
-
+    @GetMapping("/games/games-list")
+    public Collection<GameStatusDTO> getAllGames() {
+        return gameCatalog.getAllGames();
     }
-
-    @PostMapping("/games/{gameId}/save")
-    public void saveGame(@PathVariable String gameId) {
-
-    }
-
-    @GetMapping("/games/{gameId}/history")
-    public void getMovesHistory(@PathVariable String gameId) {
-
-    }
-
-    @GetMapping("/games/history")
-    public void getGamesHistory() {
-
-    }
-
     @DeleteMapping("/games/{gameId}")
-    public void deleteGame(@PathVariable String gameId) {
-
+    public ResponseEntity<String> deleteGame(@PathVariable String gameId) {
+        gameCatalog.deleteGame(gameId);
+        return ResponseEntity.ok("La partie a bien été supprimée !");
     }
 }

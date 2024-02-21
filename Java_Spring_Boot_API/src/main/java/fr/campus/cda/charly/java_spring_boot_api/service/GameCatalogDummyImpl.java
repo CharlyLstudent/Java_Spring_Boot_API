@@ -9,7 +9,9 @@ import fr.le_campus_numerique.square_games.engine.GameFactory;
 import fr.le_campus_numerique.square_games.engine.connectfour.ConnectFourGameFactory;
 import fr.le_campus_numerique.square_games.engine.taquin.TaquinGameFactory;
 import fr.le_campus_numerique.square_games.engine.tictactoe.TicTacToeGameFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -42,6 +44,25 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
         return Optional.ofNullable(games.get(gameId));
     }
 
+    @Override
+    public Collection<GameStatusDTO> getAllGames() {
+        return games.values();
+    }
+
+    @Override
+    public void deleteGame(String gameId) {
+        if (!games.containsKey(gameId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La partie n'a pas été trouvée et ne peut pas être supprimée.");
+        }
+            games.remove(gameId);
+    }
+
+//    @Override
+//    public List<String> possibleMoves(String gameId) {
+//
+//        return
+//    }
+
     public GameDTO createGame(GameCreationParams params){
         GameFactory gameFactory = selectFactory(params.getGameType());
         Game game = gameFactory.createGame(params.getPlayerCount(), params.getBoardSize());
@@ -50,6 +71,7 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
         games.put(gameId.toString(), new GameStatusDTO(game.getFactoryId(),game.getBoardSize(),game.getStatus(),game.getId()));
         return creatGame;
     }
+
 
     public GameFactory selectFactory(String type) {
 
