@@ -19,7 +19,7 @@ import java.util.UUID;
 @RestController
 public class GameController {
     @Autowired
-    private GameCatalogDummyImpl gameCatalog;
+    private GameCatalogInterface gameCatalog;
 
     @PostMapping("/games")
     public GameDTO createGame(@RequestBody GameCreationParams params) {
@@ -37,7 +37,10 @@ public class GameController {
     }
     @DeleteMapping("/games/{gameId}")
     public ResponseEntity<String> deleteGame(@PathVariable String gameId) {
-        gameCatalog.deleteGame(gameId);
+       boolean isDeleted =  gameCatalog.deleteGame(gameId);
+        if (!isDeleted) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La partie n'a pas été trouvée et ne peut pas être supprimée.");
+        }
         return ResponseEntity.ok("La partie a bien été supprimée !");
     }
 }

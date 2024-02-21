@@ -9,9 +9,7 @@ import fr.le_campus_numerique.square_games.engine.GameFactory;
 import fr.le_campus_numerique.square_games.engine.connectfour.ConnectFourGameFactory;
 import fr.le_campus_numerique.square_games.engine.taquin.TaquinGameFactory;
 import fr.le_campus_numerique.square_games.engine.tictactoe.TicTacToeGameFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -39,6 +37,7 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
         gameIds.add(connectFourGameFactory.getGameFactoryId());
         return Collections.unmodifiableSet(gameIds);
     }
+
     @Override
     public Optional<GameStatusDTO> getGameState(String gameId) {
         return Optional.ofNullable(games.get(gameId));
@@ -50,11 +49,12 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
     }
 
     @Override
-    public void deleteGame(String gameId) {
-        if (!games.containsKey(gameId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La partie n'a pas été trouvée et ne peut pas être supprimée.");
-        }
+    public boolean deleteGame(String gameId) {
+        if (games.containsKey(gameId)) {
             games.remove(gameId);
+            return true; // Retourne true si le jeu est trouvé et supprimé
+        }
+        return false; // Retourne false si le jeu n'est pas trouvé
     }
 
 //    @Override
@@ -63,12 +63,12 @@ public class GameCatalogDummyImpl implements GameCatalogInterface {
 //        return
 //    }
 
-    public GameDTO createGame(GameCreationParams params){
+    public GameDTO createGame(GameCreationParams params) {
         GameFactory gameFactory = selectFactory(params.getGameType());
         Game game = gameFactory.createGame(params.getPlayerCount(), params.getBoardSize());
         UUID gameId = game.getId(); // Utilisez l'ID fourni par l'objet game
-        GameDTO creatGame = new GameDTO(game.getFactoryId(),game.getBoardSize(),game.getStatus(),game.getId());
-        games.put(gameId.toString(), new GameStatusDTO(game.getFactoryId(),game.getBoardSize(),game.getStatus(),game.getId()));
+        GameDTO creatGame = new GameDTO(game.getFactoryId(), game.getBoardSize(), game.getStatus(), game.getId());
+        games.put(gameId.toString(), new GameStatusDTO(game.getFactoryId(), game.getBoardSize(), game.getStatus(), game.getId()));
         return creatGame;
     }
 
