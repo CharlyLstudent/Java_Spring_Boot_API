@@ -2,6 +2,7 @@ package fr.campus.cda.charly.java_spring_boot_api.service;
 
 import fr.campus.cda.charly.java_spring_boot_api.dto.GameCreationParams;
 import fr.campus.cda.charly.java_spring_boot_api.repository.GameCatalogInterface;
+import fr.campus.cda.charly.java_spring_boot_api.repository.GamePluginInterface;
 import fr.campus.cda.charly.java_spring_boot_api.repository.GameServiceInterface;
 import fr.le_campus_numerique.square_games.engine.Game;
 import fr.le_campus_numerique.square_games.engine.GameFactory;
@@ -15,6 +16,7 @@ public class GameServiceImpl implements GameServiceInterface {
 
     @Autowired
     private GameCatalogInterface gameCatalog;
+
     private final Map<String, Game> games = new HashMap<>();
     public Game createGame(GameCreationParams params) {
         GameFactory gameFactory = gameCatalog.selectFactory(params.getGameType());
