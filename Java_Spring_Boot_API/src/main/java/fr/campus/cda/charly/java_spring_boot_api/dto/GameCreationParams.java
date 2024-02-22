@@ -4,7 +4,6 @@ public class GameCreationParams {
     private String gameType;
     private int playerCount;
     private int boardSize;
-
     private int id;
 
     public GameCreationParams() {
@@ -24,7 +23,6 @@ public class GameCreationParams {
     public int getBoardSize() {
         return boardSize;
     }
-
     public int getId() {
         return id;
     }

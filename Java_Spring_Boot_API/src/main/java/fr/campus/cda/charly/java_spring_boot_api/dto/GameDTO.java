@@ -4,6 +4,6 @@ import fr.le_campus_numerique.square_games.engine.GameStatus;
 
 import java.util.UUID;
 
-public record GameDTO(String name, Integer boardSize, GameStatus gameStatus, UUID getId) {
+public record GameDTO(String id, String name) {
 
 }

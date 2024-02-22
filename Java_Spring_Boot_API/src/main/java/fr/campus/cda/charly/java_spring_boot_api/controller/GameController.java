@@ -2,45 +2,57 @@ package fr.campus.cda.charly.java_spring_boot_api.controller;
 
 import fr.campus.cda.charly.java_spring_boot_api.dto.GameCreationParams;
 import fr.campus.cda.charly.java_spring_boot_api.dto.GameDTO;
-import fr.campus.cda.charly.java_spring_boot_api.dto.GameStatusDTO;
 import fr.campus.cda.charly.java_spring_boot_api.repository.GameCatalogInterface;
-import fr.campus.cda.charly.java_spring_boot_api.service.GameCatalogDummyImpl;
+import fr.campus.cda.charly.java_spring_boot_api.service.GameServiceImpl;
 import fr.le_campus_numerique.square_games.engine.Game;
-import fr.le_campus_numerique.square_games.engine.GameFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
-import java.util.UUID;
+import java.util.List;
 
 @RestController
 public class GameController {
     @Autowired
     private GameCatalogInterface gameCatalog;
 
+    @Autowired
+    private GameServiceImpl game;
+
+    private GameDTO gameToDto(Game entry) {
+        return new GameDTO(entry.getId().toString(), entry.getFactoryId());
+    }
+
+    private List<GameDTO> DtoToList(Collection<Game> games) {
+        return games.stream()
+                .map(this::gameToDto)
+                .toList();
+    }
+    @GetMapping("/gameCatalog")
+    public Collection<String> getGameCatalog() {
+        return gameCatalog.getGameIdentifiers();
+    }
+
     @PostMapping("/games")
     public GameDTO createGame(@RequestBody GameCreationParams params) {
-        return gameCatalog.createGame(params);
+        return gameToDto(game.createGame(params));
     }
     @GetMapping("/games/{gameId}")
-    public GameStatusDTO getGame(@PathVariable String gameId) {
-        return gameCatalog
-                .getGameState(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public GameDTO getGame(@PathVariable String gameId) {
+        return gameToDto(game.getGame(gameId));
     }
     @GetMapping("/games/games-list")
-    public Collection<GameStatusDTO> getAllGames() {
-        return gameCatalog.getAllGames();
+    public List<GameDTO> getAllGames() {
+        return DtoToList(game.getAllGames());
     }
     @DeleteMapping("/games/{gameId}")
-    public ResponseEntity<String> deleteGame(@PathVariable String gameId) {
-       boolean isDeleted =  gameCatalog.deleteGame(gameId);
-        if (!isDeleted) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La partie n'a pas été trouvée et ne peut pas être supprimée.");
-        }
-        return ResponseEntity.ok("La partie a bien été supprimée !");
+    public boolean deleteGame(@PathVariable String gameId) {
+        return game.deleteGame(gameId);
     }
+
+    @GetMapping("/games/{gameId}/possiblemoves")
+    public Object getPossibleMoves(@PathVariable String gameId) {
+        return game.getPossibleMoves(gameId);
+    }
+
 }
