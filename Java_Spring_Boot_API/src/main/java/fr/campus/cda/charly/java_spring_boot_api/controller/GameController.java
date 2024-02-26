@@ -25,7 +25,7 @@ public class GameController {
     private List<GamePluginInterface> gamePluginList;
 
     private GameDTO gameToDto(Game entry) {
-        return new GameDTO(entry.getId().toString(), entry.getFactoryId());
+        return new GameDTO(entry.getId().toString(), entry.getFactoryId(), entry.getBoardSize(), entry.getStatus());
     }
 
     private List<GameDTO> DtoToList(Collection<Game> games) {

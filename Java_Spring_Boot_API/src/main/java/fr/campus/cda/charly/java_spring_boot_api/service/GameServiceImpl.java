@@ -7,6 +7,7 @@ import fr.campus.cda.charly.java_spring_boot_api.repository.GameServiceInterface
 import fr.le_campus_numerique.square_games.engine.Game;
 import fr.le_campus_numerique.square_games.engine.GameFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,14 +15,19 @@ import java.util.*;
 @Service
 public class GameServiceImpl implements GameServiceInterface {
 
-    @Autowired
-    private GameCatalogInterface gameCatalog;
 
+    @Autowired
+    private List<GamePluginInterface> gamePlugins;
     private final Map<String, Game> games = new HashMap<>();
+
+
     public Game createGame(GameCreationParams params) {
-        GameFactory gameFactory = gameCatalog.selectFactory(params.getGameType());
-        Game game = gameFactory.createGame(params.getPlayerCount(), params.getBoardSize());
-        games.put(game.getId().toString(),game);
+        GamePluginInterface plugin = gamePlugins.stream()
+                .filter(p -> p.supportsGameType(params.getGameType()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported game type: " + params.getGameType()));
+        Game game = plugin.createGame(params);
+        games.put(game.getId().toString(), game);
         return game;
     }
 
