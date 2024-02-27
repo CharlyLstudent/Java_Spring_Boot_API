@@ -1,27 +1,16 @@
 package fr.campus.cda.charly.java_spring_boot_api.dao;
 
-import java.util.UUID;
-
 public class User {
-    private UUID id;
+    private int id;
     private String name;
 
-    public User(UUID id, String name) {
+    public User(String name, int id) {
         this.id = id;
         this.name = name;
     }
 
-    public User(String name) {
-        this.name = name;
-        this.id = UUID.randomUUID();
-    }
-
-    public UUID getId() {
+    public int getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getName() {

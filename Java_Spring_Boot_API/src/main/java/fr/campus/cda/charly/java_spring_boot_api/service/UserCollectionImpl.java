@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 @Service
 public class UserCollectionImpl implements UserDAO {
 
@@ -19,24 +18,24 @@ public class UserCollectionImpl implements UserDAO {
     }
 
     @Override
-    public User getUserById(UUID id) {
+    public User getUserById(int id) {
         return users.stream()
-                .filter(user -> user.getId().equals(id))
+                .filter(user -> user.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
     public User addUser(UserCreationParams params) {
-       User user = new User(params.name());
+       User user = new User(params.name(), params.id());
         users.add(user);
         return user;
     }
 
     @Override
-    public User updateUser(UUID id, UserCreationParams params) {
+    public User updateUser(int id, UserCreationParams params) {
        User user =  users.stream()
-                .filter(u -> u.getId().equals(id))
+                .filter(u -> u.getId() == id)
                 .findFirst()
                 .orElse(null);
         assert user != null;
@@ -45,9 +44,9 @@ public class UserCollectionImpl implements UserDAO {
     }
 
     @Override
-    public User deleteUser(UUID id) {
+    public User deleteUser(int id) {
         User user =  users.stream()
-                .filter(u -> u.getId().equals(id))
+                .filter(u -> u.getId() == id)
                 .findFirst()
                 .orElse(null);
         users.remove(user);

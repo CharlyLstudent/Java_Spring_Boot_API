@@ -4,52 +4,55 @@ import fr.campus.cda.charly.java_spring_boot_api.dao.User;
 import fr.campus.cda.charly.java_spring_boot_api.dao.UserDAO;
 import fr.campus.cda.charly.java_spring_boot_api.dto.UserCreationParams;
 import fr.campus.cda.charly.java_spring_boot_api.dto.UserDTO;
-import fr.campus.cda.charly.java_spring_boot_api.service.UserCollectionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 public class UserController {
 
+//    @Qualifier("userCollectionImpl")
     @Autowired
-    UserDAO userDAO;
-    private UserDTO userToDTO(User entity){
-        return new UserDTO(entity.getName(), entity.getId());
+    private UserDAO userDAO;
+
+    private UserDTO userToDTO(User user) {
+        return new UserDTO(user.getName(), user.getId());
     }
 
-    private List<UserDTO> dtoToList(List<User> users){
+    private List<UserDTO> dtoToList(List<User> users) {
         return users.stream()
                 .map(this::userToDTO)
                 .toList();
     }
+
     @PostMapping("/users")
-    public UserDTO addUser(@RequestBody UserCreationParams params){
-      return  userToDTO(userDAO.addUser(params));
+    public UserDTO addUser(@RequestBody UserCreationParams params) {
+        User addUser = userDAO.addUser(params);
+        return userToDTO(addUser);
     }
+
     @GetMapping("/users")
-    public List<UserDTO> getAllUsers(){
+    public List<UserDTO> getAllUsers() {
         return dtoToList(userDAO.getAllUsers());
     }
 
     @GetMapping("/users/{id}")
-    public UserDTO getUserById(@PathVariable UUID id){
+    public UserDTO getUserById(@PathVariable int id) {
         return userToDTO(userDAO.getUserById(id));
     }
 
     @DeleteMapping("/users/{id}")
-    public UserDTO deleteUser(@PathVariable UUID id){
+    public UserDTO deleteUser(@PathVariable int id) {
         return userToDTO(userDAO.deleteUser(id));
     }
 
     @PutMapping("/users/{id}")
-    public UserDTO updateUser(@RequestBody UserCreationParams params, @PathVariable UUID id){
-        User updatedUser = userDAO.updateUser(id,params);
+    public UserDTO updateUser(@RequestBody UserCreationParams params, @PathVariable int id) {
+        User updatedUser = userDAO.updateUser(id, params);
         return userToDTO(updatedUser);
     }
-
 
 
 }
