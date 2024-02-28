@@ -1,6 +1,6 @@
 package fr.campus.cda.charly.java_spring_boot_api.dao;
 
-import fr.campus.cda.charly.java_spring_boot_api.dao.User;
+import fr.campus.cda.charly.java_spring_boot_api.entity.User;
 import fr.campus.cda.charly.java_spring_boot_api.database.DbAccess;
 import fr.campus.cda.charly.java_spring_boot_api.dto.UserCreationParams;
 import org.springframework.context.annotation.Primary;

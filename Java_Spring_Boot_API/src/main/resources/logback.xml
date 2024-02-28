@@ -1,0 +1,31 @@
+<configuration>
+// Appender pour la console
+<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>%magenta(%d{HH:mm:ss.SSS}) [%green(%thread)] %highlight(%-5level) %yellow(%logger{36}) - %msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+    </filter>
+</appender>
+
+// Appender pour écrire les erreurs dans un fichier
+<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>src/main/resources/application.log</file>
+    <append>true</append>
+    <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>ERROR</level>
+        <onMatch>ACCEPT</onMatch>
+        <onMismatch>DENY</onMismatch>
+    </filter>
+</appender>
+
+// Configuration du logger
+<root level="DEBUG">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+</root>
+</configuration>
