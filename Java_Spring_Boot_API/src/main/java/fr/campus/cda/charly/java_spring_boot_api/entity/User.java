@@ -1,6 +1,10 @@
 package fr.campus.cda.charly.java_spring_boot_api.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "utilisateurs")
@@ -30,4 +34,5 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
 }

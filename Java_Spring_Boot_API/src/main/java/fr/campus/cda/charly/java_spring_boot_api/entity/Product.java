@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 public class Product {
@@ -15,7 +16,7 @@ public class Product {
 
     private int price;
 
-    public Product(){
+    public Product() {
 
     }
 
