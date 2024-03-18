@@ -1,12 +1,10 @@
 package fr.campus.cda.charly.java_spring_boot_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -20,6 +18,16 @@ public class UserEntity implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     public UserEntity() {
         // Constructeur par défaut pour JPA
@@ -36,12 +44,13 @@ public class UserEntity implements UserDetails {
     }
 
     public UserEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //TODO retourner les autorités (rôle/permission) de l'utilisateur
-        return null;
+     return roles;
     }
 
     @Override
